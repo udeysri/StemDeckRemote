@@ -1,0 +1,68 @@
+name: StemDeckRemote
+options:
+  bundleIdPrefix: com.stemdeck
+  deploymentTarget:
+    iOS: "16.0"
+targets:
+  StemDeckRemote:
+    type: application
+    platform: iOS
+    sources:
+      - path: StemDeckRemote
+        excludes:
+          - "SampleSongs/**"
+      - path: StemDeckRemote/SampleSongs
+        type: folder
+        buildPhase: resources
+    info:
+      path: StemDeckRemote/Info.plist
+      properties:
+        UILaunchScreen:
+          UIImageName: StemDeck-Remote-Transparent
+          UIColorName: LaunchBackground
+        NSCameraUsageDescription: "StemDeck Remote uses the camera to scan the pairing QR code shown in StemDeck's desktop Settings."
+        NSLocalNetworkUsageDescription: "StemDeck Remote connects to StemDeck on your local Wi-Fi network to sync your song library."
+        NSAppTransportSecurity:
+          # StemDeck serves plain http on the LAN until "Make available on
+          # your network" has generated a certificate (see PairedServer.swift).
+          # This scopes the http exception to private-network addresses only,
+          # rather than disabling ATS app-wide.
+          NSAllowsLocalNetworking: true
+        # iPhone is portrait-only — the mixer's layouts were designed around
+        # a tall, narrow screen. iPad gets the full set: it has the width to
+        # spare in landscape too, so both view modes lay themselves out for
+        # it instead of just stretching the phone layout.
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIBackgroundModes:
+          - audio
+        # Without this, iPadOS opens the app in a small resizable window
+        # (its multitasking/Stage Manager default) instead of full screen —
+        # the mixer's layouts assume they own the whole screen, not an
+        # arbitrary floating window size.
+        UIRequiresFullScreen: true
+        # SwiftUI's WindowGroup is scene-based and, on its own, opts the app
+        # into the newer per-app windowing model (the one that shows macOS-
+        # style traffic-light window controls and lets the app be resized)
+        # regardless of UIRequiresFullScreen, which predates that model.
+        # Explicitly declaring no multi-scene support turns that off too.
+        UIApplicationSupportsMultipleScenes: false
+        # The console's hardware-rack look is designed as a single dark
+        # theme, not a light/dark pair — system chrome (nav bars, lists,
+        # sheets) would otherwise flip to a white background under the
+        # system's Light appearance.
+        UIUserInterfaceStyle: Dark
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.udey.stemdeckremote
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        DEVELOPMENT_TEAM: ""
+        CODE_SIGN_STYLE: Automatic

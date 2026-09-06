@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StemDeck Remote</title>
+<meta name="description" content="Native iOS and Android companion apps for StemDeck — sync your library and mix stems live from your phone.">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #121316;
+    --surface: #1b1b1f;
+    --surface-high: #292a2d;
+    --on-surface: #e3e2e6;
+    --on-surface-variant: #c5c6ca;
+    --outline: #8f9194;
+    --accent: #93d3c3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--on-surface);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 48px;
+  }
+  header { text-align: center; margin-bottom: 48px; }
+  .logo {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    background: linear-gradient(160deg, var(--surface-high), var(--surface));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 40px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  h1 { font-size: 30px; margin: 0 0 8px; }
+  .tagline { color: var(--on-surface-variant); font-size: 16px; margin: 0; }
+  section { margin-bottom: 40px; }
+  h2 {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 16px;
+  }
+  p { color: var(--on-surface-variant); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: var(--surface-high);
+    color: var(--on-surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .button:hover { text-decoration: none; background: #33343a; }
+  .button.primary { background: var(--accent); color: #0d1210; }
+  .button.primary:hover { background: #a6ded0; }
+  .stores { display: flex; gap: 12px; flex-wrap: wrap; }
+  .store-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--outline);
+    border: 1px dashed rgba(255,255,255,0.15);
+    font-size: 13px;
+  }
+  .screenshots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .screenshot-placeholder {
+    aspect-ratio: 9 / 19.5;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px dashed rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--outline);
+    font-size: 12px;
+    text-align: center;
+    padding: 8px;
+  }
+  ul { color: var(--on-surface-variant); padding-left: 20px; }
+  footer {
+    text-align: center;
+    color: var(--outline);
+    font-size: 13px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 24px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">🎚️</div>
+      <h1>StemDeck Remote</h1>
+      <p class="tagline">Your StemDeck library, remote in your pocket.</p>
+    </header>
+
+    <section>
+      <h2>What it is</h2>
+      <p>
+        StemDeck Remote is the native iOS and Android companion to
+        <a href="https://github.com/stemdeckapp/stemdeck">StemDeck</a>, the
+        desktop app that separates songs into vocals, drums, bass, guitar,
+        piano, and more. Pair with StemDeck over your local network to sync
+        your library, download stems to your phone, and mix them live on a
+        per-stem console — no cables, no computer required once you've paired.
+      </p>
+      <div class="buttons">
+        <a class="button primary" href="https://github.com/stemdeckapp/stemdeck">StemDeck (desktop app)</a>
+        <a class="button" href="https://github.com/OWNER/StemDeck-Lite">Source code</a>
+        <a class="button" href="https://github.com/OWNER/StemDeck-Lite/issues">Support / report an issue</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Get the app</h2>
+      <p>Coming soon:</p>
+      <div class="stores">
+        <span class="store-badge">App Store — coming soon</span>
+        <span class="store-badge">Google Play — coming soon</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Screenshots</h2>
+      <div class="screenshots">
+        <div class="screenshot-placeholder">Pairing</div>
+        <div class="screenshot-placeholder">Library</div>
+        <div class="screenshot-placeholder">Stem console</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Highlights</h2>
+      <ul>
+        <li>QR or manual pairing over your local Wi-Fi network, no account or cloud service involved</li>
+        <li>Background stem downloads so songs are ready to play the moment you tap them</li>
+        <li>Per-stem mixing with independent volume/mute/solo, plus shared speed and pitch control</li>
+        <li>A Simple waveform-and-fader view and a full Advanced hardware-console view</li>
+        <li>Client-side folders and a local Trash — organizing your library never touches StemDeck itself</li>
+        <li>Background playback with lock-screen / notification transport controls</li>
+      </ul>
+    </section>
+
+    <footer>
+      StemDeck Remote is licensed under the
+      <a href="https://github.com/OWNER/StemDeck-Lite/blob/main/LICENSE">Apache License 2.0</a>.
+      A companion to <a href="https://github.com/stemdeckapp/stemdeck">stemdeckapp/stemdeck</a> — all credit for
+      the stem-separation and analysis pipeline belongs to that project.
+    </footer>
+  </div>
+</body>
+</html>

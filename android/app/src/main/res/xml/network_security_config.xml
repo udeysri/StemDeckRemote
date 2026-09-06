@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  StemDeck serves plain http on the LAN until "Make available on your
+  network" has generated a certificate (see PairedServer.kt) — Android
+  blocks cleartext traffic by default from API 28 onward, the same gate
+  iOS's App Transport Security applies. The iOS target lifts it narrowly
+  via NSAllowsLocalNetworking (Info.plist); this is the direct equivalent,
+  just app-wide rather than scoped to RFC1918 ranges specifically, since a
+  paired server's address is only known at runtime, never a fixed domain
+  this config could name in advance.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

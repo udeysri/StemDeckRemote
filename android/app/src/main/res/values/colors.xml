@@ -1,0 +1,4 @@
+<resources>
+    <!-- Matches ConsoleTheme.background (0x121316) in the Compose theme. -->
+    <color name="console_background">#121316</color>
+</resources>

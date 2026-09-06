@@ -1,0 +1,20 @@
+<resources>
+    <!-- The console's hardware-rack look is a single dark theme, not a
+         light/dark pair (same call as iOS's `UIUserInterfaceStyle: Dark` /
+         `.preferredColorScheme(.dark)`) — force dark everywhere rather than
+         letting system chrome follow the device's light/dark setting. -->
+    <style name="Theme.StemDeckRemote" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/console_background</item>
+        <item name="android:statusBarColor">@color/console_background</item>
+        <item name="android:navigationBarColor">@color/console_background</item>
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Brief window-background theme shown the instant the process starts,
+         before Compose has inflated anything — the equivalent slot to iOS's
+         UILaunchScreen (UIImageName/UIColorName in Info.plist). -->
+    <style name="Theme.StemDeckRemote.Splash" parent="Theme.StemDeckRemote">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+</resources>

@@ -1,0 +1,9 @@
+# Platform-specific ignores live in ios/.gitignore and android/.gitignore —
+# this one is just for things that can show up anywhere in the repo.
+.DS_Store
+
+# Xcode can recreate an empty workspace stub at a project's *old* path if
+# it's still open when the folder gets moved out from under it (see the
+# ios/ move in this repo's history) — belt and suspenders against that
+# ever landing at the repo root again.
+/StemDeckRemote.xcodeproj/
