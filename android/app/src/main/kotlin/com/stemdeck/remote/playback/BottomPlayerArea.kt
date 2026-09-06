@@ -46,6 +46,8 @@ import com.stemdeck.remote.playback.ConsoleTheme.color
 fun BottomPlayerArea(
     isPlaying: Boolean,
     isLooping: Boolean,
+    isMarkInSet: Boolean,
+    isMarkOutSet: Boolean,
     currentTime: Double,
     duration: Double,
     playbackRate: Double,
@@ -67,6 +69,8 @@ fun BottomPlayerArea(
                 modifier = Modifier.weight(1f).fillMaxHeight(),
                 isPlaying = isPlaying,
                 isLooping = isLooping,
+                isMarkInSet = isMarkInSet,
+                isMarkOutSet = isMarkOutSet,
                 onToggle = onToggle,
                 onToggleLoop = onToggleLoop,
                 onMarkIn = onMarkIn,
@@ -99,6 +103,8 @@ fun BottomPlayerArea(
 private fun ButtonGrid(
     isPlaying: Boolean,
     isLooping: Boolean,
+    isMarkInSet: Boolean,
+    isMarkOutSet: Boolean,
     onToggle: () -> Unit,
     onToggleLoop: () -> Unit,
     onMarkIn: () -> Unit,
@@ -123,8 +129,8 @@ private fun ButtonGrid(
             )
         }
         Row(modifier = Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            TransportButton(icon = Icons.Filled.SkipNext, isActive = false, onClick = onMarkIn, modifier = Modifier.weight(1f).fillMaxHeight())
-            TransportButton(icon = Icons.Filled.SkipPrevious, isActive = false, onClick = onMarkOut, modifier = Modifier.weight(1f).fillMaxHeight())
+            TransportButton(icon = Icons.Filled.SkipNext, isActive = isMarkInSet, activeColor = ConsoleTheme.markerIn, onClick = onMarkIn, modifier = Modifier.weight(1f).fillMaxHeight())
+            TransportButton(icon = Icons.Filled.SkipPrevious, isActive = isMarkOutSet, activeColor = ConsoleTheme.markerOut, onClick = onMarkOut, modifier = Modifier.weight(1f).fillMaxHeight())
         }
     }
 }

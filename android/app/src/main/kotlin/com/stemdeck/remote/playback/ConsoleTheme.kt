@@ -40,6 +40,13 @@ object ConsoleTheme {
     /** The brief's soft-glowing LED / active-state accent. */
     val accent = color(0x93d3c3)
 
+    /** Mark In / Mark Out region markers on the waveform — the standard DAW green-in/red-out convention. */
+    val markerIn = color(0x8bc98f)
+    val markerOut = color(0xe07a7a)
+
+    /** The loop-region shading between a mark-in/mark-out pair — same hue as the whole-song loop tint (`0xf2e07a`) at low opacity, so "this part loops" reads as one consistent visual language. */
+    val loopRegionFill = color(0xf2e07a).copy(alpha = 0.16f)
+
     /**
      * One pastel per stem, matching the brief's "chalky pastel channel
      * accents" — StemDeck's 6 stems (vocals, drums, bass, guitar, piano,

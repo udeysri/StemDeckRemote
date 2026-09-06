@@ -14,6 +14,11 @@ struct WaveformView: View {
     let peaks: [[Double]]
     let color: Color
     let progress: Double
+    /// Mark In / Mark Out positions, as a 0...1 fraction of the track —
+    /// `nil` when that marker isn't set. See `PlayerViewModel.markInTime`/
+    /// `markOutTime`.
+    var markInFraction: Double? = nil
+    var markOutFraction: Double? = nil
 
     var body: some View {
         Canvas { context, size in
@@ -24,6 +29,13 @@ struct WaveformView: View {
             let groupSize = max(1, peaks.count / barCount)
             let barWidth = size.width / CGFloat(barCount)
             let playedBars = Int(progress * Double(barCount))
+
+            // Loop-region shading first, so the waveform bars draw on top of it.
+            if let inFrac = markInFraction, let outFrac = markOutFraction {
+                let x0 = CGFloat(min(inFrac, outFrac)) * size.width
+                let x1 = CGFloat(max(inFrac, outFrac)) * size.width
+                context.fill(Path(CGRect(x: x0, y: 0, width: x1 - x0, height: size.height)), with: .color(ConsoleTheme.loopRegionFill))
+            }
 
             var start = 0
             var bar = 0
@@ -47,6 +59,22 @@ struct WaveformView: View {
                 start = end
                 bar += 1
             }
+
+            if let inFrac = markInFraction { drawMarker(context: context, size: size, fraction: inFrac, color: ConsoleTheme.markerIn) }
+            if let outFrac = markOutFraction { drawMarker(context: context, size: size, fraction: outFrac, color: ConsoleTheme.markerOut) }
         }
+    }
+
+    /// A thin vertical line plus a small flag triangle at the top — the
+    /// standard "locator" look most DAWs use for mark in/out points.
+    private func drawMarker(context: GraphicsContext, size: CGSize, fraction: Double, color: Color) {
+        let x = CGFloat(fraction) * size.width
+        context.fill(Path(CGRect(x: x - 1, y: 0, width: 2, height: size.height)), with: .color(color))
+        var flag = Path()
+        flag.move(to: CGPoint(x: x - 5, y: 0))
+        flag.addLine(to: CGPoint(x: x + 5, y: 0))
+        flag.addLine(to: CGPoint(x: x, y: 8))
+        flag.closeSubpath()
+        context.fill(flag, with: .color(color))
     }
 }

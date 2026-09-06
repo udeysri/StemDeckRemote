@@ -42,6 +42,15 @@ struct SimpleConsoleView: View {
 
     private var combinedPeaks: [[Double]] { PeaksMerger.combine(viewModel.peaks) }
 
+    private var markInFraction: Double? {
+        guard let time = viewModel.markInTime, viewModel.duration > 0 else { return nil }
+        return time / viewModel.duration
+    }
+    private var markOutFraction: Double? {
+        guard let time = viewModel.markOutTime, viewModel.duration > 0 else { return nil }
+        return time / viewModel.duration
+    }
+
     var body: some View {
         GeometryReader { geo in
             let rowCount = viewModel.channels.count
@@ -56,7 +65,7 @@ struct SimpleConsoleView: View {
                 header
 
                 GeometryReader { waveGeo in
-                    WaveformView(peaks: combinedPeaks, color: .white, progress: scrubProgress ?? viewModel.progress)
+                    WaveformView(peaks: combinedPeaks, color: .white, progress: scrubProgress ?? viewModel.progress, markInFraction: markInFraction, markOutFraction: markOutFraction)
                         .contentShape(Rectangle())
                         .gesture(
                             DragGesture(minimumDistance: 0)
@@ -82,6 +91,8 @@ struct SimpleConsoleView: View {
                 BottomPlayerArea(
                     isPlaying: viewModel.isPlaying,
                     isLooping: viewModel.isLooping,
+                    isMarkInSet: viewModel.markInTime != nil,
+                    isMarkOutSet: viewModel.markOutTime != nil,
                     currentTime: scrubProgress.map { $0 * viewModel.duration } ?? viewModel.currentTime,
                     duration: viewModel.duration,
                     playbackRate: viewModel.playbackRate,

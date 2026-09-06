@@ -6,6 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
 
 /**
  * Renders one stem's pre-computed [min, max] peak pairs — `peaks.json`, the
@@ -20,7 +22,15 @@ import androidx.compose.ui.graphics.Color
  * 1500 slivers.
  */
 @Composable
-fun WaveformView(peaks: List<List<Double>>, color: Color, progress: Double, modifier: Modifier = Modifier) {
+fun WaveformView(
+    peaks: List<List<Double>>,
+    color: Color,
+    progress: Double,
+    modifier: Modifier = Modifier,
+    /** Mark In / Mark Out positions, as a 0..1 fraction of the track — null when that marker isn't set. See `PlayerViewModel.markInTime`/`markOutTime`. */
+    markInFraction: Double? = null,
+    markOutFraction: Double? = null,
+) {
     Canvas(modifier = modifier) {
         if (peaks.isEmpty() || size.width <= 0f || size.height <= 0f) return@Canvas
         val midY = size.height / 2
@@ -29,6 +39,13 @@ fun WaveformView(peaks: List<List<Double>>, color: Color, progress: Double, modi
         val groupSize = maxOf(1, peaks.size / barCount)
         val barWidth = size.width / barCount
         val playedBars = (progress * barCount).toInt()
+
+        // Loop-region shading first, so the waveform bars draw on top of it.
+        if (markInFraction != null && markOutFraction != null) {
+            val x0 = minOf(markInFraction, markOutFraction).toFloat() * size.width
+            val x1 = maxOf(markInFraction, markOutFraction).toFloat() * size.width
+            drawRect(color = ConsoleTheme.loopRegionFill, topLeft = Offset(x0, 0f), size = Size(x1 - x0, size.height))
+        }
 
         var start = 0
         var bar = 0
@@ -54,5 +71,21 @@ fun WaveformView(peaks: List<List<Double>>, color: Color, progress: Double, modi
             start = end
             bar += 1
         }
+
+        markInFraction?.let { drawMarker(it, ConsoleTheme.markerIn) }
+        markOutFraction?.let { drawMarker(it, ConsoleTheme.markerOut) }
     }
+}
+
+/** A thin vertical line plus a small flag triangle at the top — the standard "locator" look most DAWs use for mark in/out points. */
+private fun DrawScope.drawMarker(fraction: Double, color: Color) {
+    val x = fraction.toFloat() * size.width
+    drawRect(color = color, topLeft = Offset(x - 1f, 0f), size = Size(2f, size.height))
+    val flag = Path().apply {
+        moveTo(x - 5f, 0f)
+        lineTo(x + 5f, 0f)
+        lineTo(x, 8f)
+        close()
+    }
+    drawPath(flag, color = color)
 }

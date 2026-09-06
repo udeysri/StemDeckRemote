@@ -86,6 +86,13 @@ class PlayerViewModel(
     private val _isLooping = MutableStateFlow(false)
     val isLooping: StateFlow<Boolean> get() = _isLooping
 
+    /** Mark In / Mark Out points on the master waveform — a DAW-style A/B loop region. Each is placed at the current playback position and toggles off on a second tap of its own button; see [markIn]/[markOut]. */
+    private val _markInTime = MutableStateFlow<Double?>(null)
+    val markInTime: StateFlow<Double?> get() = _markInTime
+
+    private val _markOutTime = MutableStateFlow<Double?>(null)
+    val markOutTime: StateFlow<Double?> get() = _markOutTime
+
     /** Live post-fader RMS level per stem, 0..1, updated while playing — what makes the LED meters bounce with the music instead of just showing the fader position. */
     private val _liveLevels = MutableStateFlow<Map<String, Double>>(emptyMap())
     val liveLevels: StateFlow<Map<String, Double>> get() = _liveLevels
@@ -248,8 +255,24 @@ class PlayerViewModel(
         _liveLevels.value = emptyMap()
     }
 
-    fun markIn() = Unit
-    fun markOut() = Unit
+    /** Both mark-in and mark-out, normalized so `start <= end` regardless of which order the two were placed in — `null` unless both are set. Guards against a zero-length region from an accidental rapid double-tap of both buttons at nearly the same position. */
+    val loopRegion: Pair<Double, Double>?
+        get() {
+            val markIn = _markInTime.value ?: return null
+            val markOut = _markOutTime.value ?: return null
+            val start = min(markIn, markOut)
+            val end = max(markIn, markOut)
+            return if (end - start > 0.05) start to end else null
+        }
+
+    /** Places a mark-in point at the current playback position, or clears it on a second tap. Once both mark-in and mark-out are set, playback loops within that region — see [checkLoopRegion]. */
+    fun markIn() {
+        _markInTime.value = if (_markInTime.value == null) _currentTime.value else null
+    }
+
+    fun markOut() {
+        _markOutTime.value = if (_markOutTime.value == null) _currentTime.value else null
+    }
 
     private fun startProgressUpdates() {
         progressJob?.cancel()
@@ -257,9 +280,17 @@ class PlayerViewModel(
             while (isActive) {
                 _currentTime.value = engine.currentPositionMs() / 1000.0
                 updateCurrentChord()
+                checkLoopRegion()
                 delay(50)
             }
         }
+    }
+
+    /** While a loop region is set, seeks back to its start once playback reaches its end — a plain reuse of the existing seek machinery, polled at the same ~20fps cadence as the rest of this loop, more than precise enough for a practice loop (worst case a ~50ms overshoot past the out marker before it wraps). */
+    private fun checkLoopRegion() {
+        if (!_isPlaying.value) return
+        val (start, end) = loopRegion ?: return
+        if (_currentTime.value >= end) seek(start)
     }
 
     private fun updateCurrentChord() {

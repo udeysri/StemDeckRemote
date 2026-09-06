@@ -32,6 +32,11 @@ final class PlayerViewModel: ObservableObject {
     @Published private(set) var playbackRate: Double = 1.0
     @Published private(set) var pitchSemitones: Int = 0
     @Published private(set) var isLooping = false
+    /// Mark In / Mark Out points on the master waveform — a DAW-style A/B
+    /// loop region. Each is placed at the current playback position and
+    /// toggles off on a second tap of its own button; see `markIn`/`markOut`.
+    @Published private(set) var markInTime: TimeInterval?
+    @Published private(set) var markOutTime: TimeInterval?
     /// Live post-fader RMS level per stem, 0...1, updated while playing —
     /// what makes the LED meters bounce with the music instead of just
     /// showing the fader position. Rows fall back to the fader position
@@ -215,8 +220,28 @@ final class PlayerViewModel: ObservableObject {
         liveLevels.removeAll()
     }
 
-    func markIn() {}
-    func markOut() {}
+    /// Both mark-in and mark-out, normalized so `start <= end` regardless of
+    /// which order the two were placed in — `nil` unless both are set.
+    /// Guards against a zero-length region from an accidental rapid
+    /// double-tap of both buttons at nearly the same position.
+    var loopRegion: (start: TimeInterval, end: TimeInterval)? {
+        guard let markIn = markInTime, let markOut = markOutTime else { return nil }
+        let start = min(markIn, markOut)
+        let end = max(markIn, markOut)
+        guard end - start > 0.05 else { return nil }
+        return (start, end)
+    }
+
+    /// Places a mark-in point at the current playback position, or clears
+    /// it on a second tap. Once both mark-in and mark-out are set, playback
+    /// loops within that region — see `checkLoopRegion`.
+    func markIn() {
+        markInTime = (markInTime == nil) ? currentTime : nil
+    }
+
+    func markOut() {
+        markOutTime = (markOutTime == nil) ? currentTime : nil
+    }
 
     private func startProgressUpdates() {
         progressTask?.cancel()
@@ -225,9 +250,20 @@ final class PlayerViewModel: ObservableObject {
                 guard let self else { return }
                 self.currentTime = self.engine.currentTime()
                 self.updateCurrentChord()
+                self.checkLoopRegion()
                 try? await Task.sleep(nanoseconds: 50_000_000)
             }
         }
+    }
+
+    /// While a loop region is set, seeks back to its start once playback
+    /// reaches its end — a plain reuse of the existing seek machinery,
+    /// polled at the same ~20fps cadence as the rest of this loop, more
+    /// than precise enough for a practice loop (worst case a ~50ms
+    /// overshoot past the out marker before it wraps).
+    private func checkLoopRegion() {
+        guard isPlaying, let region = loopRegion, currentTime >= region.end else { return }
+        seek(to: region.start)
     }
 
     private func updateCurrentChord() {

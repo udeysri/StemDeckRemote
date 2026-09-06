@@ -47,6 +47,15 @@ struct AdvancedConsoleView: View {
 
     private var combinedPeaks: [[Double]] { PeaksMerger.combine(viewModel.peaks) }
 
+    private var markInFraction: Double? {
+        guard let time = viewModel.markInTime, viewModel.duration > 0 else { return nil }
+        return time / viewModel.duration
+    }
+    private var markOutFraction: Double? {
+        guard let time = viewModel.markOutTime, viewModel.duration > 0 else { return nil }
+        return time / viewModel.duration
+    }
+
     var body: some View {
         GeometryReader { geo in
             let rowCount = max(1, viewModel.channels.count)
@@ -85,6 +94,8 @@ struct AdvancedConsoleView: View {
                 BottomPlayerArea(
                     isPlaying: viewModel.isPlaying,
                     isLooping: viewModel.isLooping,
+                    isMarkInSet: viewModel.markInTime != nil,
+                    isMarkOutSet: viewModel.markOutTime != nil,
                     currentTime: scrubProgress.map { $0 * viewModel.duration } ?? viewModel.currentTime,
                     duration: viewModel.duration,
                     playbackRate: viewModel.playbackRate,
@@ -119,7 +130,9 @@ struct AdvancedConsoleView: View {
             WaveformView(
                 peaks: combinedPeaks,
                 color: viewModel.isLooping ? Color(hex: 0xf2e07a) : ConsoleTheme.onSurface,
-                progress: scrubProgress ?? viewModel.progress
+                progress: scrubProgress ?? viewModel.progress,
+                markInFraction: markInFraction,
+                markOutFraction: markOutFraction
             )
             .contentShape(Rectangle())
             .gesture(

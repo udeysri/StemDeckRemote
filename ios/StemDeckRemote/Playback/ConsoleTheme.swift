@@ -19,6 +19,16 @@ enum ConsoleTheme {
     /// The brief's soft-glowing LED / active-state accent.
     static let accent = Color(hex: 0x93d3c3)
 
+    /// Mark In / Mark Out region markers on the waveform — the standard
+    /// DAW green-in/red-out convention.
+    static let markerIn = Color(hex: 0x8bc98f)
+    static let markerOut = Color(hex: 0xe07a7a)
+    /// The loop-region shading between a mark-in/mark-out pair — same hue
+    /// as the whole-song loop tint (`0xf2e07a`, used for the Loop button and
+    /// the waveform color when whole-song looping is on) at low opacity, so
+    /// "this part loops" reads as one consistent visual language.
+    static let loopRegionFill = Color(hex: 0xf2e07a).opacity(0.16)
+
     /// One pastel per stem, matching the brief's "chalky pastel channel
     /// accents" — StemDeck's 6 stems (vocals, drums, bass, guitar, piano,
     /// other); anything else falls back to `outline`.

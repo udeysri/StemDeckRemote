@@ -7,6 +7,8 @@ import SwiftUI
 struct BottomPlayerArea: View {
     let isPlaying: Bool
     let isLooping: Bool
+    let isMarkInSet: Bool
+    let isMarkOutSet: Bool
     let currentTime: TimeInterval
     let duration: TimeInterval
     let playbackRate: Double
@@ -54,8 +56,8 @@ struct BottomPlayerArea: View {
                 )
             }
             HStack(spacing: 10) {
-                transportButton(icon: "arrow.right.to.line", isActive: false, action: onMarkIn)
-                transportButton(icon: "arrow.left.to.line", isActive: false, action: onMarkOut)
+                transportButton(icon: "arrow.right.to.line", isActive: isMarkInSet, activeColor: ConsoleTheme.markerIn, action: onMarkIn)
+                transportButton(icon: "arrow.left.to.line", isActive: isMarkOutSet, activeColor: ConsoleTheme.markerOut, action: onMarkOut)
             }
         }
         .padding(16)

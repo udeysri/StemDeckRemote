@@ -69,9 +69,13 @@ fun SimpleConsoleView(
     val playbackRate by viewModel.playbackRate.collectAsStateWithLifecycle()
     val pitchSemitones by viewModel.pitchSemitones.collectAsStateWithLifecycle()
     val systemVolumeValue by systemVolume.volume.collectAsStateWithLifecycle()
+    val markInTime by viewModel.markInTime.collectAsStateWithLifecycle()
+    val markOutTime by viewModel.markOutTime.collectAsStateWithLifecycle()
 
     var scrubProgress by remember { mutableStateOf<Double?>(null) }
     val combinedPeaks = remember(peaks) { PeaksMerger.combine(peaks) }
+    val markInFraction = markInTime?.takeIf { duration > 0 }?.let { it / duration }
+    val markOutFraction = markOutTime?.takeIf { duration > 0 }?.let { it / duration }
 
     val headerHeight = 56.dp
     val waveformHeight = 80.dp
@@ -115,6 +119,8 @@ fun SimpleConsoleView(
                     peaks = combinedPeaks,
                     color = Color.White,
                     progress = scrubProgress ?: progress,
+                    markInFraction = markInFraction,
+                    markOutFraction = markOutFraction,
                     modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(duration) {
@@ -170,6 +176,8 @@ fun SimpleConsoleView(
             BottomPlayerArea(
                 isPlaying = isPlaying,
                 isLooping = isLooping,
+                isMarkInSet = markInTime != null,
+                isMarkOutSet = markOutTime != null,
                 currentTime = scrubProgress?.let { it * duration } ?: currentTime,
                 duration = duration,
                 playbackRate = playbackRate,
