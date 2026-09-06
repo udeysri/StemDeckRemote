@@ -99,7 +99,7 @@ please include both in the same PR so they don't drift apart.
 ## Support
 
 Found a bug or have a question? Please
-[open an issue](https://github.com/OWNER/StemDeck-Lite/issues) — this is
+[open an issue](https://github.com/udeysri/StemDeck-Remote/issues) — this is
 also the support URL listed for both apps in their store listings.
 
 ## License
