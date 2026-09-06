@@ -38,6 +38,8 @@ platform-by-platform breakdown of every design decision.
   you tap them open
 - Per-stem mixing: independent volume/mute/solo per stem, plus shared
   speed and pitch control across the whole mix
+- Mark In / Mark Out region looping — a DAW-style A/B loop for practicing a
+  specific section, right on the master waveform
 - Two console layouts: a plain waveform-and-fader "Simple" view, and a full
   six-stem "Advanced" hardware-rack view with per-stem waveforms, LED level
   meters, and dB-precise faders
