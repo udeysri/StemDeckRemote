@@ -1,12 +1,9 @@
 # Screenshots
 
-Drop screenshots here (e.g. `ios-pairing.png`, `android-library.png`,
-`ios-console-advanced.png`) and reference them from the root `README.md` and
-`docs/index.html`.
+- `shot-1-pairing.png` — Pairing / home screen
+- `shot-2-advanced.png` — Player, Advanced console
+- `shot-3-simple.png` — Player, Simple console
+- `shot-4-library.png` — Library, with folders
 
-Suggested shots to cover, one pair (iOS + Android) each:
-- Pairing / home screen
-- Library (with a couple of folders, one song mid-download)
-- Player — Simple console
-- Player — Advanced console
-- Mini player
+Referenced from the root `README.md` and `docs/index.html`. iOS shots only
+for now — Android equivalents (same 4 screens) welcome as a follow-up.

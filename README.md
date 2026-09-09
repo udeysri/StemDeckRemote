@@ -14,19 +14,19 @@ cables, no computer required once you've paired.
 <table>
   <tr>
     <td align="center" width="25%">
-      <img src="https://github.com/user-attachments/assets/2a48a5ba-6d9d-49ca-8134-7b6b806d962c" width="200"><br>
+      <img src="docs/screenshots/shot-1-pairing.png" width="200"><br>
       <sub><b>Pairs with StemDeck on your computer</b><br>Scan a QR code or type its address</sub>
     </td>
     <td align="center" width="25%">
-      <img src="https://github.com/user-attachments/assets/4a6a6ceb-a0c7-4dfa-a1ab-44322ef6123b" width="200"><br>
+      <img src="docs/screenshots/shot-2-advanced.png" width="200"><br>
       <sub><b>Split any song into its parts</b><br>Vocals, drums, bass, guitar, piano — mixed live</sub>
     </td>
     <td align="center" width="25%">
-      <img src="https://github.com/user-attachments/assets/b6f8f23d-7270-49c6-aefb-8f6bbb0f184e" width="200"><br>
+      <img src="docs/screenshots/shot-3-simple.png" width="200"><br>
       <sub><b>Simple when you want simple</b><br>One fader per part, one tap to mute or solo</sub>
     </td>
     <td align="center" width="25%">
-      <img src="https://github.com/user-attachments/assets/c9a57827-5923-47ab-94f3-7d95821ce45c" width="200"><br>
+      <img src="docs/screenshots/shot-4-library.png" width="200"><br>
       <sub><b>A library that stays organized</b><br>Sort songs into folders on your phone</sub>
     </td>
   </tr>
