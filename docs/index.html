@@ -101,6 +101,23 @@
     text-align: center;
     padding: 8px;
   }
+  .screenshot {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .screenshot img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 19.5;
+    object-fit: cover;
+  }
+  .screenshot figcaption {
+    padding: 10px 12px 12px;
+    font-size: 12px;
+    color: var(--on-surface-variant);
+    text-align: center;
+  }
   ul { color: var(--on-surface-variant); padding-left: 20px; }
   footer {
     text-align: center;
@@ -148,9 +165,22 @@
     <section>
       <h2>Screenshots</h2>
       <div class="screenshots">
-        <div class="screenshot-placeholder">Pairing</div>
-        <div class="screenshot-placeholder">Library</div>
-        <div class="screenshot-placeholder">Stem console</div>
+        <figure class="screenshot">
+          <img src="https://github.com/user-attachments/assets/2a48a5ba-6d9d-49ca-8134-7b6b806d962c" alt="Pairing screen — scan a QR code or type your StemDeck's address">
+          <figcaption>Pairs with StemDeck on your computer</figcaption>
+        </figure>
+        <figure class="screenshot">
+          <img src="https://github.com/user-attachments/assets/4a6a6ceb-a0c7-4dfa-a1ab-44322ef6123b" alt="Advanced hardware-console mixer view">
+          <figcaption>Split any song into its parts</figcaption>
+        </figure>
+        <figure class="screenshot">
+          <img src="https://github.com/user-attachments/assets/b6f8f23d-7270-49c6-aefb-8f6bbb0f184e" alt="Simple waveform-and-fader mixer view">
+          <figcaption>Simple when you want simple</figcaption>
+        </figure>
+        <figure class="screenshot">
+          <img src="https://github.com/user-attachments/assets/c9a57827-5923-47ab-94f3-7d95821ce45c" alt="Library screen with folders">
+          <figcaption>A library that stays organized</figcaption>
+        </figure>
       </div>
     </section>
 
