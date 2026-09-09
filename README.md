@@ -11,7 +11,26 @@ with a StemDeck instance on your local network to sync your song library,
 download stems to your phone, and mix them live on a per-stem console — no
 cables, no computer required once you've paired.
 
-<!-- Screenshots: see docs/screenshots/ — drop images there and reference them here once available. -->
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/2a48a5ba-6d9d-49ca-8134-7b6b806d962c" width="200"><br>
+      <sub><b>Pairs with StemDeck on your computer</b><br>Scan a QR code or type its address</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/4a6a6ceb-a0c7-4dfa-a1ab-44322ef6123b" width="200"><br>
+      <sub><b>Split any song into its parts</b><br>Vocals, drums, bass, guitar, piano — mixed live</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/b6f8f23d-7270-49c6-aefb-8f6bbb0f184e" width="200"><br>
+      <sub><b>Simple when you want simple</b><br>One fader per part, one tap to mute or solo</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/user-attachments/assets/c9a57827-5923-47ab-94f3-7d95821ce45c" width="200"><br>
+      <sub><b>A library that stays organized</b><br>Sort songs into folders on your phone</sub>
+    </td>
+  </tr>
+</table>
 
 ## Get the app
 
@@ -105,7 +124,7 @@ please include both in the same PR so they don't drift apart.
 ## Support
 
 Found a bug or have a question? Please
-[open an issue](https://github.com/udeysri/StemDeck-Remote/issues) — this is
+[open an issue](https://github.com/udeysri/StemDeckRemote/issues) — this is
 also the support URL listed for both apps in their store listings.
 
 ## License
