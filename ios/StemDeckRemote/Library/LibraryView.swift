@@ -49,8 +49,9 @@ struct LibraryView: View {
                             Menu {
                                 Button {
                                     isSelecting = true
+                                    toggleSelectAll()
                                 } label: {
-                                    Label("Select Songs", systemImage: "checkmark.circle")
+                                    Label("Select All", systemImage: "checkmark.circle")
                                 }
                                 Button {
                                     isShowingManageFolders = true
@@ -95,7 +96,12 @@ struct LibraryView: View {
                         folderStore.assign(jobIDs: selectedIDs, toFolder: nil)
                         exitSelection()
                     }
-                    Button("Cancel", role: .cancel) {}
+                    Button("Cancel", role: .cancel) {
+                        // A swipe-to-move never entered real multi-select, so
+                        // the single ad-hoc ID it staged in `selectedIDs`
+                        // shouldn't linger into the next real selection.
+                        if !isSelecting { selectedIDs.removeAll() }
+                    }
                 }
                 .sheet(isPresented: $isShowingManageFolders) {
                     ManageFoldersView()
@@ -287,7 +293,19 @@ struct LibraryView: View {
 
     @ViewBuilder
     private func songRow(_ job: Job) -> some View {
-        Button {
+        // Plain tap/long-press gestures, not a `Button` — a `Button`'s own
+        // gesture recognizer wins over an attached `.onLongPressGesture`,
+        // so the long press to enter selection mode would never fire and
+        // every press-and-hold would just fall through to a normal tap.
+        HStack(spacing: 12) {
+            if isSelecting {
+                Image(systemName: selectedIDs.contains(job.id) ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(selectedIDs.contains(job.id) ? Color.accentColor : Color.secondary)
+            }
+            SongRow(job: job)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
             if isSelecting {
                 if selectedIDs.contains(job.id) {
                     selectedIDs.remove(job.id)
@@ -297,21 +315,32 @@ struct LibraryView: View {
             } else {
                 PlaybackCoordinator.shared.play(job: job, server: server)
             }
-        } label: {
-            HStack(spacing: 12) {
-                if isSelecting {
-                    Image(systemName: selectedIDs.contains(job.id) ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(selectedIDs.contains(job.id) ? Color.accentColor : Color.secondary)
-                }
-                SongRow(job: job)
+        }
+        .onLongPressGesture(minimumDuration: 0.4) {
+            if !isSelecting {
+                isSelecting = true
+                selectedIDs.insert(job.id)
             }
         }
-        .buttonStyle(.plain)
         .swipeActions(edge: .trailing) {
-            Button(role: .destructive) {
-                trashSong(job)
-            } label: {
-                Label("Delete", systemImage: "trash")
+            if !isSelecting {
+                Button(role: .destructive) {
+                    trashSong(job)
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+                .tint(ConsoleTheme.markerOut)
+            }
+        }
+        .swipeActions(edge: .leading) {
+            if !isSelecting {
+                Button {
+                    selectedIDs = [job.id]
+                    isShowingMoveDialog = true
+                } label: {
+                    Label("Move", systemImage: "folder")
+                }
+                .tint(ConsoleTheme.accent)
             }
         }
     }

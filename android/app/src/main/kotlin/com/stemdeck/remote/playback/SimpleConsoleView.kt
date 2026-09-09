@@ -1,5 +1,6 @@
 package com.stemdeck.remote.playback
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -38,6 +39,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -117,7 +119,7 @@ fun SimpleConsoleView(
             ) {
                 WaveformView(
                     peaks = combinedPeaks,
-                    color = Color.White,
+                    color = if (isLooping) ConsoleTheme.color(0xf2e07a) else Color.White,
                     progress = scrubProgress ?: progress,
                     markInFraction = markInFraction,
                     markOutFraction = markOutFraction,
@@ -252,7 +254,11 @@ private fun SimpleFillBar(stem: String, value: Double, onValueChange: (Double) -
                 .background(StemIcon.color(stem)),
         )
         Row(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(StemIcon.icon(stem), contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
+            Image(
+                painter = painterResource(StemIcon.imageRes(stem)),
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+            )
             Text(text = StemIcon.displayName(stem), color = Color.White, fontSize = 15.sp, maxLines = 1, modifier = Modifier.padding(start = 8.dp).weight(1f))
         }
         if (dimmed) {

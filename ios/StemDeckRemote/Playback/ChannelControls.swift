@@ -26,6 +26,10 @@ struct ChannelLabel: View {
     var body: some View {
         HStack(spacing: 6) {
             LEDDot(color: isAudible ? StemIcon.color(for: stem) : ConsoleTheme.outlineVariant, size: 7)
+            // Kept as a small monochrome SF Symbol (not StemIcon.imageName's
+            // full-color artwork) on purpose: at size 12 its job is to
+            // dim/brighten with mute state, which a single-color tint
+            // communicates and detailed art can't.
             Image(systemName: StemIcon.systemName(for: stem))
                 .font(.system(size: 12))
                 .foregroundStyle(isAudible ? ConsoleTheme.onSurfaceVariant : ConsoleTheme.outline)

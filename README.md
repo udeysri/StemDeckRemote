@@ -91,6 +91,10 @@ and the REST API both clients speak belongs to that project. If you're
 looking for the actual audio-separation engine, that's the repo you want —
 this one is just a remote control for it.
 
+The six full-color stem icons (Vocals, Drums, Bass, Guitar, Piano, Other) are
+from [iconpacks.net](https://www.iconpacks.net/), free for personal and
+commercial use.
+
 ## Contributing
 
 Issues and pull requests are welcome. There's no formal contribution

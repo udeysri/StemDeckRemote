@@ -18,6 +18,22 @@ enum StemIcon {
         }
     }
 
+    /// Full-color stem artwork (from iconpacks.net — free for commercial/personal
+    /// use, see the root README's Acknowledgments) for the one or two spots per
+    /// screen where the icon is the hero rather than a small state indicator.
+    /// Unlike `systemName`, these are never tinted — they carry their own color.
+    static func imageName(for stem: String) -> String {
+        switch stem {
+        case "vocals": return "StemIcon-vocals"
+        case "drums": return "StemIcon-drums"
+        case "bass": return "StemIcon-bass"
+        case "guitar": return "StemIcon-guitar"
+        case "piano": return "StemIcon-piano"
+        case "other": return "StemIcon-other"
+        default: return "StemIcon-other"
+        }
+    }
+
     static func color(for stem: String) -> Color {
         ConsoleTheme.stemColor(stem)
     }

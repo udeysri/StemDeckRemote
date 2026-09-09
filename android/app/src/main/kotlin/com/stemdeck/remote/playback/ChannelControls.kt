@@ -50,6 +50,9 @@ private fun HardwareButton(label: String, isEngaged: Boolean, engagedColor: Colo
 fun ChannelLabel(stem: String, isAudible: Boolean, modifier: Modifier = Modifier) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp)) {
         LEDDot(color = if (isAudible) StemIcon.color(stem) else ConsoleTheme.outlineVariant, size = 7)
+        // Kept as a small monochrome glyph (not StemIcon.imageRes's full-color
+        // artwork) on purpose: at 12dp its job is to dim/brighten with mute
+        // state, which a single-color tint communicates and detailed art can't.
         Icon(StemIcon.icon(stem), contentDescription = null, tint = if (isAudible) ConsoleTheme.onSurfaceVariant else ConsoleTheme.outline, modifier = Modifier.size(12.dp))
         Text(
             text = StemIcon.displayName(stem).uppercase(),

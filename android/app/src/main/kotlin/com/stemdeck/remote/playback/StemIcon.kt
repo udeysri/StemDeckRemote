@@ -1,5 +1,6 @@
 package com.stemdeck.remote.playback
 
+import androidx.annotation.DrawableRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.Audiotrack
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.stemdeck.remote.R
 
 /**
  * Icon, color, and display name for the 6 stems StemDeck produces
@@ -31,6 +33,23 @@ object StemIcon {
         "piano" -> Icons.Filled.LibraryMusic
         "other" -> Icons.Filled.MusicNote
         else -> Icons.Filled.Equalizer
+    }
+
+    /**
+     * Full-color stem artwork (from iconpacks.net — free for commercial/personal
+     * use, see the root README's Acknowledgments) for the one or two spots per
+     * screen where the icon is the hero rather than a small state indicator.
+     * Unlike [icon], these are never tinted — they carry their own color.
+     */
+    @DrawableRes
+    fun imageRes(stem: String): Int = when (stem) {
+        "vocals" -> R.drawable.ic_stem_vocals
+        "drums" -> R.drawable.ic_stem_drums
+        "bass" -> R.drawable.ic_stem_bass
+        "guitar" -> R.drawable.ic_stem_guitar
+        "piano" -> R.drawable.ic_stem_piano
+        "other" -> R.drawable.ic_stem_other
+        else -> R.drawable.ic_stem_other
     }
 
     fun color(stem: String): Color = ConsoleTheme.stemColor(stem)

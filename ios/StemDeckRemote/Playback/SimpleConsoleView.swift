@@ -65,7 +65,7 @@ struct SimpleConsoleView: View {
                 header
 
                 GeometryReader { waveGeo in
-                    WaveformView(peaks: combinedPeaks, color: .white, progress: scrubProgress ?? viewModel.progress, markInFraction: markInFraction, markOutFraction: markOutFraction)
+                    WaveformView(peaks: combinedPeaks, color: viewModel.isLooping ? Color(hex: 0xf2e07a) : .white, progress: scrubProgress ?? viewModel.progress, markInFraction: markInFraction, markOutFraction: markOutFraction)
                         .contentShape(Rectangle())
                         .gesture(
                             DragGesture(minimumDistance: 0)
@@ -195,10 +195,10 @@ struct SimpleConsoleView: View {
     }
 }
 
-/// A rounded fill-bar slider — drag anywhere on it to set the level. Shared
-/// by the master volume row and every per-stem row, so "the stem bars work
-/// the same as the volume bar" by construction rather than by convention.
+/// A rounded fill-bar slider — drag anywhere on it to set the level. Used
+/// by every per-stem row in the Simple layout.
 private struct SimpleFillBar: View {
+    /// A full-color stem image asset name — see `StemIcon.imageName`.
     let icon: String
     let label: String
     let color: Color
@@ -215,8 +215,13 @@ private struct SimpleFillBar: View {
                     .fill(color)
                     .frame(width: max(height, geo.size.width * CGFloat(value)))
                 HStack {
-                    Image(systemName: icon)
-                        .foregroundStyle(.white)
+                    // Full-color stem artwork, not a tinted SF Symbol — see
+                    // `StemIcon.imageName`. It carries its own color, so no
+                    // `.foregroundStyle` here.
+                    Image(icon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 22, height: 22)
                     Text(label)
                         .font(.system(size: min(16, height * 0.3), weight: .medium))
                         .foregroundStyle(.white)
@@ -256,7 +261,7 @@ private struct SimpleChannelRow: View {
     var body: some View {
         HStack(spacing: 8) {
             SimpleFillBar(
-                icon: StemIcon.systemName(for: channel.id),
+                icon: StemIcon.imageName(for: channel.id),
                 label: StemIcon.displayName(for: channel.id),
                 color: StemIcon.color(for: channel.id),
                 value: Binding(get: { channel.volume }, set: onVolumeChange),

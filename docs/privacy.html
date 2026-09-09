@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — StemDeck Remote</title>
+<meta name="description" content="StemDeck Remote's privacy policy — what data the app collects (none, sent anywhere) and why.">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #121316;
+    --surface: #1b1b1f;
+    --surface-high: #292a2d;
+    --on-surface: #e3e2e6;
+    --on-surface-variant: #c5c6ca;
+    --outline: #8f9194;
+    --accent: #93d3c3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--on-surface);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 48px;
+  }
+  header { text-align: center; margin-bottom: 48px; }
+  .logo {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    background: linear-gradient(160deg, var(--surface-high), var(--surface));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 40px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  h1 { font-size: 30px; margin: 0 0 8px; }
+  .tagline { color: var(--on-surface-variant); font-size: 16px; margin: 0; }
+  section { margin-bottom: 40px; }
+  h2 {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 16px;
+  }
+  h3 {
+    font-size: 15px;
+    color: var(--on-surface);
+    margin: 24px 0 8px;
+  }
+  p { color: var(--on-surface-variant); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: var(--surface-high);
+    color: var(--on-surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .button:hover { text-decoration: none; background: #33343a; }
+  ul { color: var(--on-surface-variant); padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  .summary-box {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+  .summary-box ul { margin: 0; padding-left: 18px; }
+  .summary-box li { color: var(--on-surface); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    color: var(--on-surface-variant);
+  }
+  th {
+    color: var(--outline);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  td:first-child, th:first-child { color: var(--on-surface); }
+  footer {
+    text-align: center;
+    color: var(--outline);
+    font-size: 13px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 24px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">🔒</div>
+      <h1>Privacy Policy</h1>
+      <p class="tagline">StemDeck Remote for iOS and Android</p>
+    </header>
+
+    <section>
+      <div class="summary-box">
+        <p style="color: var(--on-surface); margin-top: 0;"><strong>The short version:</strong></p>
+        <ul>
+          <li>StemDeck Remote doesn't collect, store, or transmit your data to us or anyone else — there's no server we run, no account, and no analytics in the app.</li>
+          <li>The app only ever talks to the StemDeck instance you pair it with, over your own local Wi-Fi network.</li>
+          <li>Everything the app stores — your library cache, downloaded stems, folders, Trash — stays on your device.</li>
+          <li>The camera is used only to scan your StemDeck's pairing QR code, on-device, and is never recorded or uploaded.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Who this is</h2>
+      <p>
+        This policy covers the StemDeck Remote apps for iOS and Android — the
+        source is public at
+        <a href="https://github.com/udeysri/StemDeck-Remote">github.com/udeysri/StemDeck-Remote</a>,
+        so anyone can verify what's described here against the actual code.
+        StemDeck Remote is a companion to
+        <a href="https://github.com/stemdeckapp/stemdeck">StemDeck</a>, a
+        separate desktop application; this policy covers the mobile apps only.
+      </p>
+    </section>
+
+    <section>
+      <h2>What the app does with data</h2>
+
+      <h3>No account, no server, no cloud</h3>
+      <p>
+        StemDeck Remote has no sign-up, no login, and no backend service
+        operated by us. The app connects directly, over your local Wi-Fi
+        network, to a StemDeck desktop instance that you pair it with —
+        typically running on a computer in your own home. We never see your
+        library, your songs, or anything else that passes between the app
+        and your StemDeck instance, because that connection never touches a
+        server we operate. There isn't one.
+      </p>
+
+      <h3>What's stored, and where</h3>
+      <p>
+        The following is stored locally on your device only, and never sent
+        anywhere by the app:
+      </p>
+      <table>
+        <thead>
+          <tr><th>Data</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Your StemDeck's address and a fingerprint of its security certificate</td><td>So the app can reconnect and recognize your paired StemDeck without asking you to pair again, and to warn you if that certificate ever unexpectedly changes.</td></tr>
+          <tr><td>Downloaded stem audio files and library metadata</td><td>So songs already downloaded play back without needing StemDeck to be reachable every time.</td></tr>
+          <tr><td>Folders you create and songs you assign to them</td><td>Organizing your library on your phone is a feature of the app, not of StemDeck — folders exist only on your device and are never sent to StemDeck.</td></tr>
+          <tr><td>Songs you remove from the app (Trash)</td><td>Deleting a song from the app only hides it locally and remembers that choice, so it isn't re-downloaded next time you sync — it never deletes anything from StemDeck itself.</td></tr>
+        </tbody>
+      </table>
+      <p>
+        Uninstalling the app deletes all of it, the same as any other app's
+        local data.
+      </p>
+
+      <h3>Camera</h3>
+      <p>
+        The camera is used for exactly one thing: scanning the QR code
+        StemDeck's desktop app displays when you pair. The camera feed is
+        processed entirely on-device to read the code and is never recorded,
+        stored, or uploaded — by us or by the on-device QR scanning library
+        the app uses. If you pair by typing your StemDeck's address instead,
+        the app never requests camera access at all.
+      </p>
+
+      <h3>Notifications</h3>
+      <p>
+        Android's notification permission is used only for the standard
+        media playback notification (the one with your song's title and
+        transport controls) while a song is playing — not for anything sent
+        from a server, because there isn't one.
+      </p>
+    </section>
+
+    <section>
+      <h2>Third parties</h2>
+      <p>
+        There are none. No analytics SDK, no crash reporting service, no
+        advertising, and no third party the app shares data with — none is
+        included in either app. The open-source libraries StemDeck Remote is
+        built on (Jetpack Compose, Media3, CameraX and ML Kit's on-device
+        barcode scanner on Android; SwiftUI and AVFoundation on iOS) run
+        entirely on your device and don't transmit anything on the app's
+        behalf.
+      </p>
+    </section>
+
+    <section>
+      <h2>Children's privacy</h2>
+      <p>
+        Because StemDeck Remote doesn't collect any personal data from
+        anyone, it doesn't knowingly collect personal data from children
+        either.
+      </p>
+    </section>
+
+    <section>
+      <h2>Changes to this policy</h2>
+      <p>
+        If this ever changes, the update will be made here and reflected in
+        the app's store listings. Given this app's whole design is "no
+        server, no account," we don't expect much to change.
+      </p>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <p>
+        Questions about this policy or the app's data handling are welcome —
+        <a href="https://github.com/udeysri/StemDeck-Remote/issues">open an issue on GitHub</a>.
+      </p>
+      <div class="buttons">
+        <a class="button" href="index.html">← Back to StemDeck Remote</a>
+      </div>
+    </section>
+
+    <footer>
+      Last updated September 7, 2026. StemDeck Remote is licensed under the
+      <a href="https://github.com/udeysri/StemDeck-Remote/blob/main/LICENSE">Apache License 2.0</a>.
+    </footer>
+  </div>
+</body>
+</html>

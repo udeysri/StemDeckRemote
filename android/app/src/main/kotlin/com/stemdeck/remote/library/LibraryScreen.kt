@@ -1,7 +1,9 @@
 package com.stemdeck.remote.library
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,10 +58,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.stemdeck.remote.playback.ConsoleTheme
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.stemdeck.remote.models.Job
@@ -162,8 +166,14 @@ fun LibraryScreen(server: PairedServer, coordinator: PlaybackCoordinator, viewMo
                             Box {
                                 IconButton(onClick = { isShowingOverflowMenu = true }) { Icon(Icons.Filled.Folder, contentDescription = "Folders") }
                                 DropdownMenu(expanded = isShowingOverflowMenu, onDismissRequest = { isShowingOverflowMenu = false }) {
-                                    DropdownMenuItem(text = { Text("Select Songs") }, onClick = { isSelecting = true; isShowingOverflowMenu = false })
-                                    DropdownMenuItem(text = { Text("Manage Folders") }, onClick = { isShowingManageFolders = true; isShowingOverflowMenu = false })
+                                    DropdownMenuItem(
+                                        text = { Text("Select All") },
+                                        onClick = { isSelecting = true; toggleSelectAll(); isShowingOverflowMenu = false },
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text("Manage Folders") },
+                                        onClick = { isShowingManageFolders = true; isShowingOverflowMenu = false },
+                                    )
                                 }
                             }
                             Box {
@@ -212,6 +222,8 @@ fun LibraryScreen(server: PairedServer, coordinator: PlaybackCoordinator, viewMo
                     onToggleSelected = { id -> selectedIDs = if (id in selectedIDs) selectedIDs - id else selectedIDs + id },
                     onOpenSong = { job -> coordinator.play(job, server) },
                     onTrashSong = { job -> selectedIDs = selectedIDs - job.id; viewModel.trashSong(job) },
+                    onMoveSong = { job -> selectedIDs = setOf(job.id); isShowingMoveDialog = true },
+                    onLongPressSong = { job -> isSelecting = true; selectedIDs = selectedIDs + job.id },
                     onRestoreSong = { id -> viewModel.restoreSong(id) },
                     searchText = searchText,
                     downloadStatuses = downloadStatuses,
@@ -243,6 +255,8 @@ fun LibraryScreen(server: PairedServer, coordinator: PlaybackCoordinator, viewMo
                     onToggleSelected = { id -> selectedIDs = if (id in selectedIDs) selectedIDs - id else selectedIDs + id },
                     onOpenSong = { job -> coordinator.play(job, server) },
                     onTrashSong = { job -> selectedIDs = selectedIDs - job.id; viewModel.trashSong(job) },
+                    onMoveSong = { job -> selectedIDs = setOf(job.id); isShowingMoveDialog = true },
+                    onLongPressSong = { job -> isSelecting = true; selectedIDs = selectedIDs + job.id },
                     onRestoreSong = { id -> viewModel.restoreSong(id) },
                     searchText = searchText,
                     downloadStatuses = downloadStatuses,
@@ -263,7 +277,7 @@ fun LibraryScreen(server: PairedServer, coordinator: PlaybackCoordinator, viewMo
 
     if (isShowingMoveDialog) {
         AlertDialog(
-            onDismissRequest = { isShowingMoveDialog = false },
+            onDismissRequest = { isShowingMoveDialog = false; if (!isSelecting) selectedIDs = emptySet() },
             title = { Text("Move ${selectedIDs.size} Song${if (selectedIDs.size == 1) "" else "s"}") },
             text = {
                 Column {
@@ -282,7 +296,15 @@ fun LibraryScreen(server: PairedServer, coordinator: PlaybackCoordinator, viewMo
                 }
             },
             confirmButton = {},
-            dismissButton = { TextButton(onClick = { isShowingMoveDialog = false }) { Text("Cancel") } },
+            dismissButton = {
+                TextButton(onClick = {
+                    isShowingMoveDialog = false
+                    // A swipe-to-move never entered real multi-select, so
+                    // the single ad-hoc ID it staged in `selectedIDs`
+                    // shouldn't linger into the next real selection.
+                    if (!isSelecting) selectedIDs = emptySet()
+                }) { Text("Cancel") }
+            },
         )
     }
 
@@ -341,6 +363,8 @@ private fun SongListContent(
     onToggleSelected: (String) -> Unit,
     onOpenSong: (Job) -> Unit,
     onTrashSong: (Job) -> Unit,
+    onMoveSong: (Job) -> Unit,
+    onLongPressSong: (Job) -> Unit,
     onRestoreSong: (String) -> Unit,
     searchText: String,
     downloadStatuses: Map<String, StemDownloadQueue.Status>,
@@ -408,7 +432,9 @@ private fun SongListContent(
                     SongRow(
                         job, isSelecting, job.id in selectedIDs, downloadStatuses[job.id] ?: StemDownloadQueue.Status.NotQueued,
                         onClick = { if (isSelecting) onToggleSelected(job.id) else onOpenSong(job) },
+                        onLongClick = { onLongPressSong(job) },
                         onDelete = { onTrashSong(job) },
+                        onMove = { onMoveSong(job) },
                     )
                 }
             } else {
@@ -440,7 +466,9 @@ private fun SongListContent(
                                 SongRow(
                                     job, isSelecting, job.id in selectedIDs, downloadStatuses[job.id] ?: StemDownloadQueue.Status.NotQueued,
                                     onClick = { if (isSelecting) onToggleSelected(job.id) else onOpenSong(job) },
+                                    onLongClick = { onLongPressSong(job) },
                                     onDelete = { onTrashSong(job) },
+                                    onMove = { onMoveSong(job) },
                                 )
                             }
                         }
@@ -502,30 +530,54 @@ private fun SongRowContent(job: Job, isSelecting: Boolean, isSelected: Boolean, 
     }
 }
 
-/** A normal library row: swipe from the end (left, in LTR) to trash it — mobile-only, never touches StemDeck. See `LibraryViewModel.trashSong`. */
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * A normal library row: swipe from the end (left, in LTR) to trash it —
+ * mobile-only, never touches StemDeck (see `LibraryViewModel.trashSong`) —
+ * or swipe from the start (right) to move it to a folder without entering
+ * multi-select. Long-pressing enters multi-select with this song already
+ * checked, same as the swipe-to-move entry point but for picking several
+ * songs at once.
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-private fun SongRow(job: Job, isSelecting: Boolean, isSelected: Boolean, status: StemDownloadQueue.Status, onClick: () -> Unit, onDelete: () -> Unit) {
+private fun SongRow(
+    job: Job,
+    isSelecting: Boolean,
+    isSelected: Boolean,
+    status: StemDownloadQueue.Status,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    onDelete: () -> Unit,
+    onMove: () -> Unit,
+) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.EndToStart) {
-                onDelete()
-                true
-            } else {
-                false
+            when (value) {
+                SwipeToDismissBoxValue.EndToStart -> { onDelete(); true }
+                // Moving doesn't remove the row, so snap back rather than dismiss.
+                SwipeToDismissBoxValue.StartToEnd -> { onMove(); false }
+                else -> false
             }
         },
     )
     SwipeToDismissBox(
         state = dismissState,
-        enableDismissFromStartToEnd = false,
-        enableDismissFromEndToStart = true,
+        enableDismissFromStartToEnd = !isSelecting,
+        enableDismissFromEndToStart = !isSelecting,
         backgroundContent = {
-            Box(
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.errorContainer).padding(horizontal = 20.dp),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.onErrorContainer)
+            when (dismissState.dismissDirection) {
+                SwipeToDismissBoxValue.StartToEnd -> Box(
+                    modifier = Modifier.fillMaxSize().background(ConsoleTheme.accent).padding(horizontal = 20.dp),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    Icon(Icons.Filled.Folder, contentDescription = "Move to Folder", tint = Color.Black.copy(alpha = 0.85f))
+                }
+                else -> Box(
+                    modifier = Modifier.fillMaxSize().background(ConsoleTheme.markerOut).padding(horizontal = 20.dp),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = Color.Black.copy(alpha = 0.85f))
+                }
             }
         },
     ) {
@@ -534,7 +586,7 @@ private fun SongRow(job: Job, isSelecting: Boolean, isSelected: Boolean, status:
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
-                .clickable(onClick = onClick)
+                .combinedClickable(onClick = onClick, onLongClick = onLongClick)
                 .padding(horizontal = 16.dp, vertical = 6.dp),
         )
     }
