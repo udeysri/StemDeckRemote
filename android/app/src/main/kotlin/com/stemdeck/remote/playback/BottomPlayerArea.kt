@@ -3,8 +3,6 @@ package com.stemdeck.remote.playback
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +30,6 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stemdeck.remote.playback.ConsoleTheme.color
@@ -216,15 +213,11 @@ private fun ProgressRow(currentTime: Double, duration: Double, onSeek: (Double) 
             modifier = Modifier
                 .weight(1f)
                 .height(16.dp)
-                .pointerInput(duration) {
-                    detectTapGestures { offset -> if (duration > 0) onSeek((offset.x / size.width).toDouble().coerceIn(0.0, 1.0) * duration) }
-                }
-                .pointerInput(duration) {
-                    detectDragGestures { change, _ ->
-                        change.consume()
-                        if (duration > 0) onSeek((change.position.x / size.width).toDouble().coerceIn(0.0, 1.0) * duration)
-                    }
-                },
+                .seekOnDrag(
+                    duration,
+                    onPreview = { fraction -> fraction?.let { if (duration > 0) onSeek(it * duration) } },
+                    onSeek = onSeek,
+                ),
         ) {
             val barHeight = 4.dp.toPx()
             val y = (size.height - barHeight) / 2

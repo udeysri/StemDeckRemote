@@ -51,7 +51,22 @@ private fun saveViewMode(context: Context, mode: MixerViewMode) {
  * playback based on its own presence on screen.
  */
 @Composable
-fun PlayerScreen(job: Job, viewModel: PlayerViewModel, coordinator: PlaybackCoordinator, modifier: Modifier = Modifier) {
+fun PlayerScreen(
+    job: Job,
+    viewModel: PlayerViewModel,
+    coordinator: PlaybackCoordinator,
+    modifier: Modifier = Modifier,
+    /**
+     * Bottom system nav-bar inset, measured by the caller from the main
+     * Activity window (see [com.stemdeck.remote.MainActivity]'s
+     * `RootScreen`) rather than from inside this screen: this screen is
+     * shown in a Dialog with `decorFitsSystemWindows = false`, and reading
+     * `WindowInsets.navigationBars` from inside that Dialog's own window
+     * came back zero, leaving the transport controls in [BottomPlayerArea]
+     * sitting half under the nav bar/gesture area.
+     */
+    navigationBarBottomPadding: androidx.compose.ui.unit.Dp = 0.dp,
+) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val systemVolume = rememberSystemVolumeController()
@@ -63,7 +78,7 @@ fun PlayerScreen(job: Job, viewModel: PlayerViewModel, coordinator: PlaybackCoor
         saveViewMode(context, viewMode)
     }
 
-    Column(modifier = modifier.fillMaxSize().background(ConsoleTheme.background)) {
+    Column(modifier = modifier.fillMaxSize().background(ConsoleTheme.background).padding(bottom = navigationBarBottomPadding)) {
         when (val s = state) {
             is PlayerViewModel.State.WaitingForStems -> WaitingContent(job, coordinator)
             is PlayerViewModel.State.LoadingEngine -> LoadingContent()

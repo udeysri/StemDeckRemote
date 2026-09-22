@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,16 +46,23 @@ fun ManageFoldersScreen(folderStore: LibraryFolderStore, onDismiss: () -> Unit) 
     var newFolderName by remember { mutableStateOf("") }
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { Text("Folders") },
                 navigationIcon = { TextButton(onClick = onDismiss) { Text("Done") } },
+                // Matches the iOS toolbar's folder.badge.plus placement — a
+                // FloatingActionButton here used to sit wherever the Dialog's
+                // wrap-content height happened to end, which for the (common,
+                // first-run) empty-folders state was right under a couple of
+                // lines of text instead of anywhere near the bottom of the
+                // screen, and read as "there's no way to create a folder".
+                actions = {
+                    IconButton(onClick = { newFolderName = ""; isShowingNewFolderPrompt = true }) {
+                        Icon(Icons.Filled.Add, contentDescription = "New Folder")
+                    }
+                },
             )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { newFolderName = ""; isShowingNewFolderPrompt = true }) {
-                Icon(Icons.Filled.Add, contentDescription = "New Folder")
-            }
         },
     ) { padding ->
         if (folders.isEmpty()) {

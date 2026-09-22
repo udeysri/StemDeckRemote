@@ -15,7 +15,10 @@ import kotlinx.coroutines.Job as CoroutineJob
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -107,16 +110,23 @@ class PlayerViewModel(
     private val _duration = MutableStateFlow(0.0)
     val duration: StateFlow<Double> get() = _duration
 
-    val progress: Double
-        get() {
-            val d = _duration.value
-            if (d <= 0) return 0.0
-            return (_currentTime.value / d).coerceIn(0.0, 1.0)
-        }
-
     private val engine = StemMixerEngine(context)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var progressJob: CoroutineJob? = null
+
+    /**
+     * 0..1 playback position, derived from [currentTime]/[duration]. A real
+     * `StateFlow` — not a plain getter reading `_currentTime.value` — so
+     * every collector recomposes when it changes. A plain getter only
+     * appeared to work where some other observed `StateFlow` happened to be
+     * read in the very same Compose recomposition scope and forced a
+     * re-evaluation on its coattails; the master waveform's played region
+     * reads this from its own scope, where that coincidence didn't hold, and
+     * so never visibly moved after a drag-seek.
+     */
+    val progress: StateFlow<Double> = combine(_currentTime, _duration) { time, duration ->
+        if (duration <= 0) 0.0 else (time / duration).coerceIn(0.0, 1.0)
+    }.stateIn(scope, SharingStarted.Eagerly, 0.0)
 
     suspend fun start() {
         _state.value = State.WaitingForStems
@@ -210,7 +220,13 @@ class PlayerViewModel(
 
     fun seek(timeSeconds: Double) {
         engine.seek((timeSeconds * 1000).toLong())
-        _currentTime.value = engine.currentPositionMs() / 1000.0
+        // Not `engine.currentPositionMs()`: ExoPlayer's position can still
+        // read as the pre-seek value for a moment after `seekTo()` returns,
+        // which left the waveform's played/highlighted region visibly stuck
+        // at the old spot right after a drag-seek. The 50ms progress ticker
+        // (startProgressUpdates) will reconcile this against the engine's
+        // real position on its next tick regardless.
+        _currentTime.value = timeSeconds.coerceIn(0.0, _duration.value)
         _isPlaying.value = engine.isPlaying
     }
 

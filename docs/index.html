@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>StemDeck Remote</title>
 <meta name="description" content="Native iOS and Android companion apps for StemDeck — sync your library and mix stems live from your phone.">
+<link rel="icon" href="app-icon.png">
+<link rel="apple-touch-icon" href="app-icon.png">
 <style>
   :root {
     color-scheme: dark;
@@ -25,21 +27,17 @@
     line-height: 1.6;
   }
   .wrap {
-    max-width: 720px;
+    max-width: 920px;
     margin: 0 auto;
     padding: 64px 24px 48px;
   }
   header { text-align: center; margin-bottom: 48px; }
-  .logo {
+  img.logo {
     width: 96px;
     height: 96px;
     border-radius: 22px;
-    background: linear-gradient(160deg, var(--surface-high), var(--surface));
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     margin: 0 auto 20px;
-    font-size: 40px;
     border: 1px solid rgba(255,255,255,0.08);
   }
   h1 { font-size: 30px; margin: 0 0 8px; }
@@ -71,52 +69,46 @@
   .button:hover { text-decoration: none; background: #33343a; }
   .button.primary { background: var(--accent); color: #0d1210; }
   .button.primary:hover { background: #a6ded0; }
-  .stores { display: flex; gap: 12px; flex-wrap: wrap; }
-  .store-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 20px;
-    border-radius: 10px;
-    background: var(--surface);
-    color: var(--outline);
-    border: 1px dashed rgba(255,255,255,0.15);
-    font-size: 13px;
-  }
-  .screenshots {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-  }
-  .screenshot-placeholder {
-    aspect-ratio: 9 / 19.5;
-    border-radius: 14px;
-    background: var(--surface);
-    border: 1px dashed rgba(255,255,255,0.15);
+  .stores {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: var(--outline);
-    font-size: 12px;
-    text-align: center;
-    padding: 8px;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+  .stores a { display: inline-flex; line-height: 0; }
+  .stores a:hover { text-decoration: none; opacity: 0.9; }
+  .store-badge-img.apple { height: 40px; width: auto; }
+  .store-badge-img.play { height: 60px; width: auto; margin: -10px -8px; }
+  .screenshots {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
   }
   .screenshot {
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.08);
+    margin: 0;
+    background: none;
+    border: none;
   }
   .screenshot img {
     display: block;
     width: 100%;
-    aspect-ratio: 9 / 19.5;
-    object-fit: cover;
+    height: auto;
   }
   .screenshot figcaption {
-    padding: 10px 12px 12px;
+    padding: 10px 4px 0;
     font-size: 12px;
+    line-height: 1.4;
     color: var(--on-surface-variant);
     text-align: center;
+  }
+  .screenshot figcaption b {
+    display: block;
+    color: var(--on-surface);
+    font-weight: 600;
+  }
+  @media (max-width: 700px) {
+    .screenshots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   ul { color: var(--on-surface-variant); padding-left: 20px; }
   footer {
@@ -131,7 +123,7 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="logo">🎚️</div>
+      <img class="logo" src="app-icon.png" alt="StemDeck Remote">
       <h1>StemDeck Remote</h1>
       <p class="tagline">Your StemDeck library, remote in your pocket.</p>
     </header>
@@ -155,10 +147,13 @@
 
     <section>
       <h2>Get the app</h2>
-      <p>Coming soon:</p>
       <div class="stores">
-        <span class="store-badge">App Store — coming soon</span>
-        <span class="store-badge">Google Play — coming soon</span>
+        <a href="https://apps.apple.com/us/app/stemdeck-remote/id6808981150">
+          <img class="store-badge-img apple" src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/white/en-us?size=250x83" alt="Download on the App Store">
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.stemdeck.remote">
+          <img class="store-badge-img play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play">
+        </a>
       </div>
     </section>
 
@@ -166,20 +161,20 @@
       <h2>Screenshots</h2>
       <div class="screenshots">
         <figure class="screenshot">
-          <img src="screenshots/shot-1-pairing.png" alt="Pairing screen — scan a QR code or type your StemDeck's address">
-          <figcaption>Pairs with StemDeck on your computer</figcaption>
+          <img src="screenshots/shot-1-pairing.png" alt="Pairing screen — scan a QR code or type your StemDeck's address" width="200">
+          <figcaption><b>Pairs with StemDeck on your computer</b>Scan a QR code or type its address</figcaption>
         </figure>
         <figure class="screenshot">
-          <img src="screenshots/shot-2-advanced.png" alt="Advanced hardware-console mixer view">
-          <figcaption>Split any song into its parts</figcaption>
+          <img src="screenshots/shot-2-advanced.png" alt="Advanced hardware-console mixer view" width="200">
+          <figcaption><b>Split any song into its parts</b>Vocals, drums, bass, guitar, piano — mixed live</figcaption>
         </figure>
         <figure class="screenshot">
-          <img src="screenshots/shot-3-simple.png" alt="Simple waveform-and-fader mixer view">
-          <figcaption>Simple when you want simple</figcaption>
+          <img src="screenshots/shot-3-simple.png" alt="Simple waveform-and-fader mixer view" width="200">
+          <figcaption><b>Simple when you want simple</b>One fader per part, one tap to mute or solo</figcaption>
         </figure>
         <figure class="screenshot">
-          <img src="screenshots/shot-4-library.png" alt="Library screen with folders">
-          <figcaption>A library that stays organized</figcaption>
+          <img src="screenshots/shot-4-library.png" alt="Library screen with folders" width="200">
+          <figcaption><b>A library that stays organized</b>Sort songs into folders on your phone</figcaption>
         </figure>
       </div>
     </section>
