@@ -175,7 +175,7 @@ class StemDownloadQueue @Inject constructor(
         try {
             missing.map { name ->
                 scope.async {
-                    val client = StemDeckClient(server)
+                    val client = StemDeckClient(server, timeoutSeconds = DOWNLOAD_TIMEOUT_SECONDS)
                     client.downloadStem(jobID, name, store.url(jobID, name))
                     progressMutex.withLock {
                         completed += 1
@@ -186,7 +186,7 @@ class StemDownloadQueue @Inject constructor(
 
             if (!store.peaksExist(jobID)) {
                 try {
-                    val client = StemDeckClient(server)
+                    val client = StemDeckClient(server, timeoutSeconds = DOWNLOAD_TIMEOUT_SECONDS)
                     val data = client.fetchPeaks(jobID)
                     store.peaksFile(jobID).writeBytes(data)
                 } catch (e: Exception) {
@@ -201,6 +201,17 @@ class StemDownloadQueue @Inject constructor(
     }
 
     companion object {
+        /**
+         * [StemDeckClient]'s default `timeoutSeconds` (2s connect/read, 8s
+         * call ceiling) is sized for tiny JSON calls, not a multi-minute
+         * song's WAV stem (tens of MB) — using it here made every real
+         * download time out and land in [Status.Failed], even though
+         * pairing/library-sync (small requests) worked fine. 30s
+         * connect/read/write with a 120s call ceiling comfortably covers a
+         * full stem on a slow LAN.
+         */
+        private const val DOWNLOAD_TIMEOUT_SECONDS = 30L
+
         fun describe(error: Throwable): String = when (error) {
             is StemDeckClient.ClientError.ServerRefused -> error.detail
             is StemDeckClient.ClientError.CertificateRejected ->

@@ -1,8 +1,8 @@
 # StemDeck Remote
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-![Platform: iOS](https://img.shields.io/badge/platform-iOS-lightgrey)
-![Platform: Android](https://img.shields.io/badge/platform-Android-3ddc84)
+[![App Store](https://img.shields.io/badge/App_Store-StemDeck_Remote-0D96F6?logo=apple&logoColor=white)](https://apps.apple.com/us/app/stemdeck-remote/id6808981150)
+[![Google Play](https://img.shields.io/badge/Google_Play-StemDeck_Remote-3DDC84?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.stemdeck.remote)
 
 Native iOS and Android companion apps for
 **[StemDeck](https://github.com/stemdeckapp/stemdeck)** — the desktop app
@@ -34,10 +34,21 @@ cables, no computer required once you've paired.
 
 ## Get the app
 
-App Store and Google Play links: **coming soon**.
+<p align="center">
+  <a href="https://apps.apple.com/us/app/stemdeck-remote/id6808981150">
+    <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="Download on the App Store" height="54">
+  </a>
+  &nbsp;
+  <a href="https://play.google.com/store/apps/details?id=com.stemdeck.remote">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">
+  </a>
+</p>
 
-In the meantime, both apps build from source — see
-[`ios/README.md`](ios/README.md) and [`android/README.md`](android/README.md).
+- **iOS / iPadOS:** [StemDeck Remote on the App Store](https://apps.apple.com/us/app/stemdeck-remote/id6808981150)
+- **Android:** [StemDeck Remote on Google Play](https://play.google.com/store/apps/details?id=com.stemdeck.remote)
+
+Both apps also build from source — see [`ios/README.md`](ios/README.md) and
+[`android/README.md`](android/README.md).
 
 ## Two native apps, one companion product
 
@@ -103,12 +114,26 @@ if you try it, an issue report either way (works or doesn't) is welcome.
 
 ## Acknowledgments
 
-This project is a companion to **[StemDeck](https://github.com/stemdeckapp/stemdeck)**.
-All credit for the stem-separation pipeline, the beat-grid/key-detection
-analysis both apps' (currently unwired) chord detection is matched against,
-and the REST API both clients speak belongs to that project. If you're
-looking for the actual audio-separation engine, that's the repo you want —
-this one is just a remote control for it.
+StemDeck Remote exists because of **[StemDeck](https://github.com/stemdeckapp/stemdeck)**
+— the free, local, open-source stem separation app this companion talks to.
+Everything that actually makes stems lives there: Demucs-based 6-stem
+separation, song analysis (BPM, key, loudness), the library, and the LAN
+REST API both clients speak. This repo is only a remote control and mixer
+for an instance you run yourself. If you're looking for the audio-separation
+engine, that's the project you want.
+
+Huge thanks to the StemDeck maintainers and community for building something
+local-first, account-free, and openly licensed (Apache 2.0), and for exposing
+a network API that made a phone and tablet companion possible at all. We're
+grateful they made the desktop app open enough to build on.
+
+If StemDeck Remote is useful to you, please star, follow, and support the
+main project:
+
+- GitHub: [stemdeckapp/stemdeck](https://github.com/stemdeckapp/stemdeck)
+- Discord: [discord.gg/YhCKsjhcwB](https://discord.gg/YhCKsjhcwB)
+- Reddit: [r/StemDeckApp](https://www.reddit.com/r/StemDeckApp/)
+- Website: [stemdeck.app](https://stemdeck.app)
 
 The six full-color stem icons (Vocals, Drums, Bass, Guitar, Piano, Other) are
 from [iconpacks.net](https://www.iconpacks.net/), free for personal and

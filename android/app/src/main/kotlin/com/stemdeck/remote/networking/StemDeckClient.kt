@@ -95,11 +95,12 @@ class StemDeckClient(
         }
         .build()
 
-    constructor(server: PairedServer) : this(
+    constructor(server: PairedServer, timeoutSeconds: Long = 2) : this(
         scheme = server.scheme,
         host = server.host,
         port = server.port,
         pinnedFingerprint = server.certFingerprint,
+        timeoutSeconds = timeoutSeconds,
     )
 
     /** Confirms the server is reachable — used both to validate a freshly scanned/typed address during pairing and as a lightweight ping. */

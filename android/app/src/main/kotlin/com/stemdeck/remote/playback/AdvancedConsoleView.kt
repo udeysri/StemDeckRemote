@@ -2,8 +2,6 @@ package com.stemdeck.remote.playback
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +27,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,7 +52,7 @@ fun AdvancedConsoleView(
 ) {
     val channels by viewModel.channels.collectAsStateWithLifecycle()
     val peaks by viewModel.peaks.collectAsStateWithLifecycle()
-    val progress = viewModel.progress
+    val progress by viewModel.progress.collectAsStateWithLifecycle()
     val currentTime by viewModel.currentTime.collectAsStateWithLifecycle()
     val duration by viewModel.duration.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
@@ -255,32 +252,6 @@ private fun AdvancedChannelRow(
     }
 }
 
-/**
- * Tap-to-seek plus live drag-to-scrub over a waveform — the Compose
- * equivalent of the iOS side's single `DragGesture(minimumDistance: 0)`
- * (which fires on a plain tap too). Compose's `detectDragGestures` requires
- * clearing touch slop before it recognizes a drag at all, so a bare tap
- * needs its own `detectTapGestures` alongside it rather than falling out of
- * one combined gesture.
- */
+/** Tap-to-seek plus live drag-to-scrub over the master waveform — see [seekOnDrag]. */
 private fun Modifier.seekableWaveform(duration: Double, onScrub: (Double?) -> Unit, onSeek: (Double) -> Unit): Modifier =
-    this
-        .pointerInput(duration) {
-            detectTapGestures { offset ->
-                if (duration > 0) onSeek((offset.x / size.width).toDouble().coerceIn(0.0, 1.0) * duration)
-            }
-        }
-        .pointerInput(duration) {
-            var lastFraction = 0.0
-            detectDragGestures(
-                onDragEnd = {
-                    onScrub(null)
-                    if (duration > 0) onSeek(lastFraction * duration)
-                },
-                onDragCancel = { onScrub(null) },
-            ) { change, _ ->
-                change.consume()
-                lastFraction = (change.position.x / size.width).toDouble().coerceIn(0.0, 1.0)
-                onScrub(lastFraction)
-            }
-        }
+    seekOnDrag(duration, onPreview = onScrub, onSeek = onSeek)

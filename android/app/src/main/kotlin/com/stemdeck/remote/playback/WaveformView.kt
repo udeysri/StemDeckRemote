@@ -1,6 +1,8 @@
 package com.stemdeck.remote.playback
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -8,6 +10,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.input.pointer.pointerInput
 
 /**
  * Renders one stem's pre-computed [min, max] peak pairs — `peaks.json`, the
@@ -76,6 +79,47 @@ fun WaveformView(
         markOutFraction?.let { drawMarker(it, ConsoleTheme.markerOut) }
     }
 }
+
+/**
+ * Tap-to-seek plus live drag-to-scrub over a horizontal strip (a waveform or
+ * a progress bar) — the Compose equivalent of the iOS side's single
+ * `DragGesture(minimumDistance: 0)`, which fires on a plain tap too.
+ *
+ * This used to be two separate `pointerInput` blocks chained on the same
+ * modifier — one `detectTapGestures`, one `detectDragGestures` — because
+ * `detectDragGestures` alone requires clearing touch slop before it
+ * recognizes anything, so a plain tap fell through unrecognized. But two
+ * independent gesture detectors racing for the same pointer events on
+ * Android is exactly the kind of thing that silently drops one of them:
+ * `detectDragGestures`'s own `awaitFirstDown` only accepts an *unconsumed*
+ * down, and its touch-slop wait bails out the instant it sees a consumed
+ * change — so whichever detector the other one interferes with first, drags
+ * stopped registering at all (only the initial tap-to-seek worked). One
+ * pointerInput block, driving both a live [onPreview] during the gesture and
+ * a final [onSeek] on release, avoids the race entirely.
+ */
+fun Modifier.seekOnDrag(duration: Double, onPreview: (Double?) -> Unit, onSeek: (Double) -> Unit): Modifier =
+    this.pointerInput(duration) {
+        awaitEachGesture {
+            val down = awaitFirstDown()
+            down.consume()
+            var fraction = (down.position.x / size.width).toDouble().coerceIn(0.0, 1.0)
+            onPreview(fraction)
+            while (true) {
+                val event = awaitPointerEvent()
+                val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                if (!change.pressed) {
+                    change.consume()
+                    break
+                }
+                fraction = (change.position.x / size.width).toDouble().coerceIn(0.0, 1.0)
+                onPreview(fraction)
+                change.consume()
+            }
+            onPreview(null)
+            if (duration > 0) onSeek(fraction * duration)
+        }
+    }
 
 /** A thin vertical line plus a small flag triangle at the top — the standard "locator" look most DAWs use for mark in/out points. */
 private fun DrawScope.drawMarker(fraction: Double, color: Color) {

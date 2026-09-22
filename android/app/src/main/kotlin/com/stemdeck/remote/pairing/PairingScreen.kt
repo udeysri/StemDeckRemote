@@ -170,7 +170,12 @@ private fun Hero() {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(top = 24.dp)) {
         Image(painter = painterResource(R.drawable.stemdeck_logo), contentDescription = null, modifier = Modifier.size(120.dp))
         Spacer(modifier = Modifier.height(16.dp))
-        Text("StemDeck Remote", style = MaterialTheme.typography.headlineMedium, textAlign = TextAlign.Center)
+        Text(
+            "StemDeck Remote",
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+        )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             "Your StemDeck library, remote in your pocket.",

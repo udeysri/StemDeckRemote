@@ -63,7 +63,7 @@ fun SimpleConsoleView(
 ) {
     val channels by viewModel.channels.collectAsStateWithLifecycle()
     val peaks by viewModel.peaks.collectAsStateWithLifecycle()
-    val progress = viewModel.progress
+    val progress by viewModel.progress.collectAsStateWithLifecycle()
     val currentTime by viewModel.currentTime.collectAsStateWithLifecycle()
     val duration by viewModel.duration.collectAsStateWithLifecycle()
     val isPlaying by viewModel.isPlaying.collectAsStateWithLifecycle()
@@ -125,20 +125,7 @@ fun SimpleConsoleView(
                     markOutFraction = markOutFraction,
                     modifier = Modifier
                         .fillMaxSize()
-                        .pointerInput(duration) {
-                            detectTapGestures { offset -> if (duration > 0) viewModel.seek((offset.x / size.width).toDouble().coerceIn(0.0, 1.0) * duration) }
-                        }
-                        .pointerInput(duration) {
-                            var lastFraction = 0.0
-                            detectDragGestures(
-                                onDragEnd = { scrubProgress = null; if (duration > 0) viewModel.seek(lastFraction * duration) },
-                                onDragCancel = { scrubProgress = null },
-                            ) { change, _ ->
-                                change.consume()
-                                lastFraction = (change.position.x / size.width).toDouble().coerceIn(0.0, 1.0)
-                                scrubProgress = lastFraction
-                            }
-                        },
+                        .seekOnDrag(duration, onPreview = { scrubProgress = it }, onSeek = { viewModel.seek(it) }),
                 )
             }
 

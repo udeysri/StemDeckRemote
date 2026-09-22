@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -52,7 +53,10 @@ fun MiniPlayerView(job: Job, viewModel: PlayerViewModel, onExpand: () -> Unit, o
         modifier = Modifier
             .fillMaxWidth()
             .background(ConsoleTheme.surfaceContainerHigh)
-            .clickable(onClick = onExpand),
+            .clickable(onClick = onExpand)
+            // enableEdgeToEdge() means this bar otherwise draws straight
+            // under the gesture/nav bar at the bottom of the screen.
+            .navigationBarsPadding(),
     ) {
         Canvas(modifier = Modifier.fillMaxWidth().height(2.dp)) {
             drawRect(color = Color.White.copy(alpha = 0.15f))

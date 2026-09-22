@@ -33,9 +33,21 @@ class PairingStore @Inject constructor(@dagger.hilt.android.qualifiers.Applicati
     private val _current = MutableStateFlow<PairedServer?>(null)
     val current: StateFlow<PairedServer?> get() = _current
 
+    /**
+     * False until the persisted server has actually been read back from
+     * DataStore. [current] is `null` both before that read finishes and
+     * after it finishes confirming there's no paired server — callers that
+     * need to tell those apart (e.g. [com.stemdeck.remote.MainActivity]'s
+     * root screen, to avoid flashing the pairing screen on a cold start
+     * before the previously-paired server has loaded) watch this instead.
+     */
+    private val _isLoaded = MutableStateFlow(false)
+    val isLoaded: StateFlow<Boolean> get() = _isLoaded
+
     init {
         scope.launch {
             _current.value = load()
+            _isLoaded.value = true
         }
     }
 
